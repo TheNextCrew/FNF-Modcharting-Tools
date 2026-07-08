@@ -1,6 +1,6 @@
 package modcharting;
 
-class Playfield
+class Playfield implements IFlxDestroyable
 {
     public var x:Float = 0;
     public var y:Float = 0;
@@ -22,4 +22,6 @@ class Playfield
         noteData.z += z;
         noteData.alpha *= alpha;
     }
+
+    public function destroy() {}
 }

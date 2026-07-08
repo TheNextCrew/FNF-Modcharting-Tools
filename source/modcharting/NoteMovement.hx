@@ -1,11 +1,11 @@
 package modcharting;
 
 #if LEATHER
-import states.PlayState;
+import funkin.play.states.PlayState;
 import game.Note;
 #elseif (PSYCH && PSYCHVERSION >= "0.7")
-import states.PlayState;
-import objects.Note;
+import funkin.play.states.PlayState;
+import funkin.play.notes.Note;
 #else
 import PlayState;
 import Note;
@@ -13,11 +13,11 @@ import Note;
 
 using StringTools;
 
-class NoteMovement
+class NoteMovement implements IFlxDestroyable
 {
     public static var keyCount = 4;
     public static var playerKeyCount = 4;
-    public static var totalKeyCount = 8;
+    public static var totalKeyCount = 8; //default 4 keys + 4 player keys, but can be changed for mods with more/less keys
     public static var arrowScale:Float = 0.7;
     public static var arrowSize:Float = 112;
     public static var defaultStrumX:Array<Float> = [];
@@ -136,6 +136,6 @@ class NoteMovement
         return col;
     }
 
-
+    public function destroy() {}
 }
 

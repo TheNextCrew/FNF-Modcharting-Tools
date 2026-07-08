@@ -13,16 +13,13 @@ import game.Conductor;
 import polymod.backends.PolymodAssets;
 #end
 #end
-#if sys
-import sys.FileSystem;
-import sys.io.File;
-#end
 #if hscript
 import hscript.*;
 #end
 #if (HSCRIPT_ALLOWED && PSYCH && PSYCHVERSION >= "0.7")
-import psychlua.HScript as FunkinHScript;
+import funkin.psychlua.HScript as FunkinHScript;
 #end
+import funkin.play.states.PlayState;
 using StringTools;
 
 typedef ModchartJson = 
@@ -92,12 +89,17 @@ class ModchartFile
         if (!FileSystem.exists(Paths.formatToSongPath(folder)))
             folder = folder.replace(" ", "-");
 
-        var moddyFile = Paths.json(#if PSYCH Paths.formatToSongPath(folder) #else PlayState.SONG.song #end + '/modchart-' + difficulty.toLowerCase());
-        var moddyFile2:String = Paths.json(#if PSYCH Paths.formatToSongPath(folder) #else PlayState.SONG.song #end + '/modchart');    
-    
+        var moddyFile:String = Paths.json(#if PSYCH Paths.formatToSongPath(folder) #else PlayState.SONG.song #end + '/modchart-' + difficulty.toLowerCase());
+        var moddyFile2:String = Paths.json(#if PSYCH Paths.formatToSongPath(folder) #else PlayState.SONG.song #end + '/modchart');
+
+        var moddyFile3:String = (Paths.json('songs/' + #if PSYCH Paths.formatToSongPath(folder) #else PlayState.SONG.song #end + '/modchart-' + difficulty.toLowerCase()));
+        var moddyFile4:String = (Paths.json(#if PSYCH 'songs/' + Paths.formatToSongPath(folder) #else PlayState.SONG.song #end + '/modchart'));
+
         #if MODS_ALLOWED
         var moddyFileMods:String = Paths.modsJson(#if PSYCH Paths.formatToSongPath(folder) #else PlayState.SONG.song #end + '/modchart-' + difficulty.toLowerCase());
         var moddyFileMods2:String = Paths.modsJson(#if PSYCH Paths.formatToSongPath(folder) #else PlayState.SONG.song #end + '/modchart');
+        var moddyFileMods3:String = (Paths.modsJson('songs/' + #if PSYCH Paths.formatToSongPath(folder) #else PlayState.SONG.song #end + '/modchart-' + difficulty.toLowerCase()));
+        var moddyFileMods4:String = (Paths.modsJson('songs' + #if PSYCH Paths.formatToSongPath(folder) #else PlayState.SONG.song #end + '/modchart'));
         #end
 
         #if PSYCH
@@ -106,6 +108,10 @@ class ModchartFile
 
             #if sys
             #if MODS_ALLOWED
+            if(FileSystem.exists(moddyFileMods3))
+                moddyFileMods = moddyFileMods3;
+            if(FileSystem.exists(moddyFileMods4))
+                moddyFileMods2 = moddyFileMods4;
             if(FileSystem.exists(moddyFileMods) && difficulty.toLowerCase() != null) 
                 hasDifficultyModchart = true;
                 if (FileSystem.exists(moddyFileMods2) && !FileSystem.exists(moddyFileMods))
@@ -113,6 +119,10 @@ class ModchartFile
             else if(FileSystem.exists(moddyFileMods2) && difficulty.toLowerCase() == null && !FileSystem.exists(moddyFileMods)) hasDifficultyModchart = false;
             #end
 
+            if(FileSystem.exists(moddyFile3))
+                moddyFile = moddyFile3;
+            if(FileSystem.exists(moddyFile4))
+                moddyFile2 = moddyFile4;
             if(FileSystem.exists(moddyFile) && difficulty.toLowerCase() != null) 
                 hasDifficultyModchart = true;
                 if (FileSystem.exists(moddyFile) && !FileSystem.exists(moddyFile))
@@ -216,7 +226,9 @@ class ModchartFile
                         filePath = Paths.json("song data/" + folder + '/modchart-' + difficulty.toLowerCase());
                         folderShit = PolymodAssets.getPath(filePath.replace('modchart-' + difficulty.toLowerCase() + '.json', "customMods/"));
                     #else 
-                        filePath = Paths.modsJson(folder + '/modchart-' + difficulty.toLowerCase());
+                        filePath = Paths.modsJson('songs/' + folder + '/modchart-' + difficulty.toLowerCase());
+                        if (!FileSystem.exists(filePath))
+                            filePath = Paths.modsJson(folder + '/modchart-' + difficulty.toLowerCase());
                         folderShit = filePath.replace('modchart-' + difficulty.toLowerCase() + '.json', "customMods/");
                     #end
 
@@ -229,6 +241,8 @@ class ModchartFile
                         folderShit = PolymodAssets.getPath(filePath.replace('modchart.json', "customMods/"));
                     #else 
                         filePath = Paths.modsJson(folder + '/modchart');
+                        if (!FileSystem.exists(filePath))
+                            filePath = Paths.modsJson('songs/' + folder + '/modchart');
                         folderShit = filePath.replace('modchart.json', "customMods/");
                     #end
 
@@ -243,7 +257,9 @@ class ModchartFile
                         filePath = Paths.json("song data/" + folder + '/modchart-' + difficulty.toLowerCase());
                         folderShit = PolymodAssets.getPath(filePath.replace('modchart-' + difficulty.toLowerCase() + '.json', "customMods/"));
                     #else 
-                        filePath = Paths.json(folder + '/modchart-' + difficulty.toLowerCase());
+                        filePath = Paths.json('songs/' + folder + '/modchart-' + difficulty.toLowerCase());
+                        if (!FileSystem.exists(filePath))
+                            filePath = Paths.json(folder + '/modchart-' + difficulty.toLowerCase());
                         folderShit = filePath.replace('modchart-' + difficulty.toLowerCase() + '.json', "customMods/");
                     #end
 
@@ -255,7 +271,9 @@ class ModchartFile
                         filePath = Paths.json("song data/" + folder + '/modchart');
                         folderShit = PolymodAssets.getPath(filePath.replace('modchart.json', "customMods/"));
                     #else 
-                        filePath = Paths.json(folder + '/modchart');
+                        filePath = Paths.json('songs/' + folder + '/modchart');
+                        if (!FileSystem.exists(filePath))
+                            filePath = Paths.json(folder + '/modchart');
                         folderShit = filePath.replace('modchart.json', "customMods/");
                     #end
 
@@ -436,16 +454,16 @@ class CustomModifierScript
 		interp.variables.set('FlxTimer', flixel.util.FlxTimer);
 		interp.variables.set('FlxTween', flixel.tweens.FlxTween);
 		interp.variables.set('FlxEase', flixel.tweens.FlxEase);
-		interp.variables.set('PlayState', #if (PSYCH && PSYCHVERSION >= "0.7") states.PlayState #else PlayState #end);
-		interp.variables.set('game', #if (PSYCH && PSYCHVERSION >= "0.7") states.PlayState.instance #else PlayState.instance #end);
-		interp.variables.set('Paths', #if (PSYCH && PSYCHVERSION >= "0.7") backend.Paths #else Paths #end);
-		interp.variables.set('Conductor', #if (PSYCH && PSYCHVERSION >= "0.7") backend.Conductor #else Conductor #end);
+		interp.variables.set('PlayState', #if (PSYCH && PSYCHVERSION >= "0.7") funkin.play.states.PlayState #else PlayState #end);
+		interp.variables.set('game', #if (PSYCH && PSYCHVERSION >= "0.7") funkin.play.states.PlayState.instance #else PlayState.instance #end);
+		interp.variables.set('Paths', #if (PSYCH && PSYCHVERSION >= "0.7") funkin.backend.Paths #else Paths #end);
+		interp.variables.set('Conductor', #if (PSYCH && PSYCHVERSION >= "0.7") funkin.backend.Conductor #else Conductor #end);
         interp.variables.set('StringTools', StringTools);
-        interp.variables.set('Note', #if (PSYCH && PSYCHVERSION >= "0.7") objects.Note #else Note #end);
+        interp.variables.set('Note', #if (PSYCH && PSYCHVERSION >= "0.7") funkin.play.notes.Note #else Note #end);
 
         #if PSYCH
-        interp.variables.set('ClientPrefs', #if (PSYCHVERSION >= "0.7") backend.ClientPrefs #else ClientPrefs #end);
-        interp.variables.set('ColorSwap', #if (PSYCHVERSION >= "0.7") shaders.ColorSwap #else ColorSwap #end);
+        interp.variables.set('ClientPrefs', #if (PSYCHVERSION >= "0.7") funkin.backend.ClientPrefs #else ClientPrefs #end);
+        interp.variables.set('ColorSwap', #if (PSYCHVERSION >= "0.7") funkin.graphics.shaders.ColorSwap #else ColorSwap #end);
         #end
 
         

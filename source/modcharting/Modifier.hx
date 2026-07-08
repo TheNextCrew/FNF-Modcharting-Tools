@@ -1,25 +1,19 @@
 package modcharting;
 
-import flixel.tweens.FlxEase;
-import flixel.math.FlxMath;
-import flixel.FlxG;
-
 #if LEATHER
-import states.PlayState;
+import funkin.play.states.PlayState;
 import game.Note;
 import game.StrumNote;
 import game.Conductor;
 import utilities.CoolUtil;
 #elseif (PSYCH && PSYCHVERSION >= "0.7")
-import states.PlayState;
-import objects.Note;
+import funkin.play.notes.Note;
 #else 
 import PlayState;
 import Note;
 #end
 import lime.math.Vector4;
 import haxe.ds.List;
-import flixel.group.FlxGroup.FlxTypedGroup;
 
 enum ModifierType
 {
@@ -1932,7 +1926,7 @@ class ArrowPath extends Modifier {
 
     override public function noteMath(noteData: NotePositionData, lane: Int, curPos: Float, pf: Int) {
         #if PSYCH
-	    if (Paths.fileExists("data/"+Paths.formatToSongPath(PlayState.SONG.song)+"/customMods/path.txt", TEXT))
+	    if (Paths.fileExists("data/songs/"+Paths.formatToSongPath(PlayState.SONG.song)+"/customMods/path.txt", TEXT) || Paths.fileExists("data/"+Paths.formatToSongPath(PlayState.SONG.song)+"/customMods/path.txt", TEXT))
         #elseif LEATHER 
         if (openfl.utils.Assets.exists(Paths.txt(PlayState.SONG.song.toLowerCase()+"/customMods/path")))
         #end
@@ -1960,10 +1954,14 @@ class ArrowPath extends Modifier {
         }
     public function loadPath() {
         var file = null;
-	file = CoolUtil.coolTextFile(Paths#if PSYCH .modFolders #else .txt#end(#if PSYCH "data/"+#end PlayState.SONG.song.toLowerCase()+"/customMods/path"#if PSYCH +".txt"#end));
+	    file = CoolUtil.coolTextFile(Paths#if PSYCH .modFolders #else .txt#end(#if PSYCH "data/"+#end PlayState.SONG.song.toLowerCase()+"/customMods/path"#if PSYCH +".txt"#end));
+        if (file == null)
+            file = CoolUtil.coolTextFile(Paths#if PSYCH .modFolders #else .txt#end(#if PSYCH "data/songs/"+#end PlayState.SONG.song.toLowerCase()+"/customMods/path"#if PSYCH +".txt"#end));
         @:privateAccess
         var file2 = null;
-	file2 = CoolUtil.coolTextFile(#if (PSYCH && PSYCHVERSION >= "0.7.3") Paths.getSharedPath #else Paths.getPreloadPath #end("data/"+PlayState.SONG.song.toLowerCase()+"/customMods/path.txt"));
+	    file2 = CoolUtil.coolTextFile(#if (PSYCH && PSYCHVERSION >= "0.7.3") Paths.getSharedPath #else Paths.getPreloadPath #end("data/"+PlayState.SONG.song.toLowerCase()+"/customMods/path.txt"));
+        if (file2 == null)
+            file2 = CoolUtil.coolTextFile(#if (PSYCH && PSYCHVERSION >= "0.7.3") Paths.getSharedPath #else Paths.getPreloadPath #end("data/songs/"+PlayState.SONG.song.toLowerCase()+"/customMods/path.txt"));
 
         var filePath = null;
         if (file != null) {

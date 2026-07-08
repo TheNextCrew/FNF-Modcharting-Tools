@@ -2,7 +2,6 @@ package modcharting;
 
 import haxe.Json;
 import openfl.net.FileReference;
-import flixel.FlxG;
 #if LUA_ALLOWED
 import llua.Lua;
 import llua.LuaL;
@@ -11,7 +10,7 @@ import llua.Convert;
 #end
 
 #if LEATHER
-import states.PlayState;
+import funkin.play.states.PlayState;
 import game.Conductor;
 #if linc_luajit
 import modding.ModchartUtilities;
@@ -20,9 +19,11 @@ import modding.scripts.languages.HScript;
 #end
 
 #if (PSYCH && PSYCHVERSION >= "0.7")
+import funkin.play.states.PlayState;
 #if LUA_ALLOWED
-import psychlua.FunkinLua;
-import psychlua.HScript as FunkinHScript;
+import funkin.psychlua.LuaUtils;
+import funkin.psychlua.FunkinLua;
+import funkin.psychlua.HScript as FunkinHScript;
 #end
 #end
 
@@ -186,7 +187,7 @@ class ModchartFuncs
             }
             #end
             #elseif LEATHER
-            /*if(flixel.FlxG.state == states.PlayState.instance){
+            /*if(flixel.FlxG.state == funkin.play.states.PlayState.instance){
                 HScript.instance.interp.variables.set('PlayfieldRenderer', PlayfieldRenderer);
                 HScript.instance.interp.variables.set('ModchartUtil', ModchartUtil);
                 HScript.instance.interp.variables.set('Modifier', Modifier);

@@ -1,27 +1,15 @@
 package modcharting;
 
-import flixel.tweens.FlxEase;
-import flixel.math.FlxMath;
 import flixel.math.FlxAngle;
 import lime.math.Vector2;
 import openfl.geom.Vector3D;
-import flixel.FlxG;
 
-#if LEATHER
-import states.PlayState;
-import game.Note;
-import game.Conductor;
-#elseif (PSYCH && PSYCHVERSION >= "0.7")
-import states.PlayState;
-import objects.Note;
-#else
-import PlayState;
-import Note;
-#end
+import funkin.play.states.PlayState;
+import funkin.play.notes.Note;
 
 using StringTools;
 
-class ModchartUtil
+final class ModchartUtil
 {
     public static function getDownscroll(instance:ModchartMusicBeatState)
     {

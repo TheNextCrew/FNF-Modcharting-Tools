@@ -3,7 +3,6 @@ package modcharting;
 #if LEATHER
 import game.Conductor;
 #end
-import backend.Conductor;
 import modcharting.ModchartUtil;
 import modcharting.ModchartEvent;
 import modcharting.Modifier;

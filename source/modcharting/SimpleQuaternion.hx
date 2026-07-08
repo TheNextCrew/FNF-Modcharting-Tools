@@ -2,7 +2,6 @@ package modcharting;
 
 import flixel.math.FlxAngle;
 import openfl.geom.Vector3D;
-import flixel.math.FlxMath;
 
 typedef Quaternion = 
 {
@@ -10,10 +9,13 @@ typedef Quaternion =
     var y:Float;
     var z:Float;
     var w:Float;
-};
+}
+
 //me whenthe
-class SimpleQuaternion
+final class SimpleQuaternion implements IFlxDestroyable
 {
+    public function destroy() {}
+
     //no more gimbal lock fuck you
     public static function fromEuler(roll:Float, pitch:Float, yaw:Float) : Quaternion
     {
@@ -32,12 +34,10 @@ class SimpleQuaternion
         q.z = cr * cp * sy - sr * sp * cy;
         return q;
     }
-    public static function transformVector(v:Vector3D, q:Quaternion) : Vector3D
-    {
-        
 
+    public static function transformVector(v:Vector3D, q:Quaternion) : Vector3D
         return v;
-    }
+
     public static function normalize(q:Quaternion) : Quaternion
     {
         var length = Math.sqrt(q.w*q.w + q.x*q.x + q.y*q.y + q.z*q.z);
@@ -48,6 +48,7 @@ class SimpleQuaternion
 
         return q;
     }
+
     public static function conjugate(q:Quaternion) : Quaternion
     {
         q.y = -q.y;
@@ -55,6 +56,7 @@ class SimpleQuaternion
         q.w = -q.w;
         return q;
     }
+
     public static function multiply(q1:Quaternion, q2:Quaternion) : Quaternion
     {
         var x = q1.x * q2.x - q1.y * q2.y - q1.z * q2.z - q1.w * q2.w;

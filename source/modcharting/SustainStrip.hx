@@ -1,18 +1,17 @@
 package modcharting;
 
-import flixel.FlxCamera;
 import flixel.graphics.tile.FlxDrawTrianglesItem.DrawData;
 import openfl.geom.Vector3D;
 #if LEATHER
 import game.Note;
 #elseif (PSYCH && PSYCHVERSION >= "0.7")
-import objects.Note;
+import funkin.play.notes.Note;
 #else
 import Note;
 #end
 import flixel.FlxStrip;
 
-class SustainStrip extends FlxStrip
+class SustainStrip extends FlxStrip implements IFlxDestroyable
 {
     private static final noteUV:Array<Float> = [
         0,0, //top left
@@ -48,12 +47,12 @@ class SustainStrip extends FlxStrip
     // TODO: check this for cases when zoom is less than initial zoom...
 	public function drawData(cameraStuff:Array<FlxCamera>):Void
     {
-        if (alpha == 0 || graphic == null || vertices == null)
+        if (alpha <= 0 || !visible || graphic == null || vertices == null)
             return;
 
         for (camera in cameraStuff)
         {
-            if (!camera.visible || !camera.exists)
+            if (!camera.visible || !camera.exists/*  || !isOnScreen(camera) */)
                 continue;
 
             getScreenPosition(_point, camera).subtractPoint(offset);
@@ -65,47 +64,51 @@ class SustainStrip extends FlxStrip
         }
     }
 
-    public function constructVertices(noteData:NotePositionData, thisNotePos:Vector3D, nextHalfNotePos:NotePositionData, nextNotePos:NotePositionData, flipGraphic:Bool, reverseClip:Bool)
+    private static var rVerts:Array<Float> = [];
+    //private static var rYOffset:Float = -1;
+    inline public function constructVertices(noteData:NotePositionData, thisNotePos:Vector3D, nextHalfNotePos:NotePositionData, nextNotePos:NotePositionData, flipGraphic:Bool, reverseClip:Bool)
     {
-        var yOffset = -1; //fix small gaps
+        //var yOffset = -1; //fix small gaps
+        /*  rYOffset = -1; //fix small gaps
         if (reverseClip)
-            yOffset *= -1;
+            rYOffset *= -1; */
 
-        var verts:Array<Float> = [];
+        //var verts:Array<Float> = [];
+        rVerts = [];
         if (flipGraphic)
         {
-            verts.push(nextNotePos.x);
-            verts.push(nextNotePos.y); //slight offset to fix small gaps
-            verts.push(nextNotePos.x+(daNote.frameWidth*(1/-nextNotePos.z)*noteData.scaleX));
-            verts.push(nextNotePos.y);
+            rVerts.push(nextNotePos.x);
+            rVerts.push(nextNotePos.y); //slight offset to fix small gaps
+            rVerts.push(nextNotePos.x+(daNote.frameWidth*(1/-nextNotePos.z)*noteData.scaleX));
+            rVerts.push(nextNotePos.y);
 
-            verts.push(nextHalfNotePos.x);
-            verts.push(nextHalfNotePos.y);
-            verts.push(nextHalfNotePos.x+(daNote.frameWidth*(1/-nextHalfNotePos.z)*noteData.scaleX));
-            verts.push(nextHalfNotePos.y);
+            rVerts.push(nextHalfNotePos.x);
+            rVerts.push(nextHalfNotePos.y);
+            rVerts.push(nextHalfNotePos.x+(daNote.frameWidth*(1/-nextHalfNotePos.z)*noteData.scaleX));
+            rVerts.push(nextHalfNotePos.y);
 
-            verts.push(thisNotePos.x);
-            verts.push(thisNotePos.y);
-            verts.push(thisNotePos.x+(daNote.frameWidth*(1/-thisNotePos.z)*nextNotePos.scaleX));
-            verts.push(thisNotePos.y);
+            rVerts.push(thisNotePos.x);
+            rVerts.push(thisNotePos.y);
+            rVerts.push(thisNotePos.x+(daNote.frameWidth*(1/-thisNotePos.z)*nextNotePos.scaleX));
+            rVerts.push(thisNotePos.y);
         }
         else 
         {
-            verts.push(thisNotePos.x);
-            verts.push(thisNotePos.y); //fliped this with the down ones (last) to test if it bugs of it fixes itself
-            verts.push(thisNotePos.x+(daNote.frameWidth*(1/-thisNotePos.z)*noteData.scaleX));
-            verts.push(thisNotePos.y);
+            rVerts.push(thisNotePos.x);
+            rVerts.push(thisNotePos.y); //fliped this with the down ones (last) to test if it bugs of it fixes itself
+            rVerts.push(thisNotePos.x+(daNote.frameWidth*(1/-thisNotePos.z)*noteData.scaleX));
+            rVerts.push(thisNotePos.y);
 
-            verts.push(nextHalfNotePos.x);
-            verts.push(nextHalfNotePos.y);
-            verts.push(nextHalfNotePos.x+(daNote.frameWidth*(1/-nextHalfNotePos.z)*noteData.scaleX));
-            verts.push(nextHalfNotePos.y);
+            rVerts.push(nextHalfNotePos.x);
+            rVerts.push(nextHalfNotePos.y);
+            rVerts.push(nextHalfNotePos.x+(daNote.frameWidth*(1/-nextHalfNotePos.z)*noteData.scaleX));
+            rVerts.push(nextHalfNotePos.y);
 
-            verts.push(nextNotePos.x);
-            verts.push(nextNotePos.y); //slight offset to fix small gaps
-            verts.push(nextNotePos.x+(daNote.frameWidth*(1/-nextNotePos.z)*nextNotePos.scaleX));
-            verts.push(nextNotePos.y);
+            rVerts.push(nextNotePos.x);
+            rVerts.push(nextNotePos.y); //slight offset to fix small gaps
+            rVerts.push(nextNotePos.x+(daNote.frameWidth*(1/-nextNotePos.z)*nextNotePos.scaleX));
+            rVerts.push(nextNotePos.y);
         }
-        vertices = new DrawData(12, true, verts);
+        vertices = new DrawData(12, true, rVerts);
     }
 }

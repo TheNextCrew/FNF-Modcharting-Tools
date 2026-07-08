@@ -1,49 +1,29 @@
-#if LEATHER
-import states.PlayState;
-import game.Song;
-import game.Section.SwagSection;
-import game.Note;
-import ui.FlxScrollableDropDownMenu;
-import game.Conductor;
-import utilities.CoolUtil;
-import game.StrumNote;
-import utilities.NoteVariables;
-import states.LoadingState;
-import states.MusicBeatState;
-import substates.MusicBeatSubstate;
-#elseif (PSYCH && PSYCHVERSION >= "0.7")
+
 import flixel.addons.ui.FlxUIDropDownMenu;
-import backend.Song.SwagSection;
-import states.PlayState;
-import backend.CoolUtil;
-import backend.Conductor;
-import backend.ClientPrefs;
-import backend.Paths;
-import states.LoadingState;
-import backend.Difficulty;
+import funkin.play.song.Song.SwagSection;
+import funkin.play.states.PlayState;
+import funkin.backend.CoolUtil;
+import funkin.backend.Conductor;
+import funkin.backend.ClientPrefs;
+import funkin.backend.Paths;
+import funkin.ui.transition.LoadingState;
+import funkin.backend.Difficulty;
 #if SCEModchartingTools
 import substates.MusicBeatSubstate;
 #else
-import backend.MusicBeatSubstate;
+import funkin.ui.MusicBeatSubstate;
 #end
-import objects.Note;
+import funkin.play.notes.Note;
 #if SCEModchartingTools
 import objects.StrumArrow;
 #else
-import objects.StrumNote;
+import funkin.play.notes.StrumNote;
 #end
-import backend.Song;
-#else
-import Section.SwagSection;
-import Song;
-import MusicBeatSubstate;
-#end
+import funkin.play.song.Song;
 
-#if (PSYCH && PSYCHVERSION >= "0.7")
 #if LUA_ALLOWED
-import psychlua.FunkinLua;
-import psychlua.HScript as FunkinHScript;
-#end
+import funkin.psychlua.FunkinLua;
+import funkin.psychlua.HScript as FunkinHScript;
 #end
 
 #if sys
